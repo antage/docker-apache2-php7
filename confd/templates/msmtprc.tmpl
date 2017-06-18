@@ -1,0 +1,9 @@
+defaults
+auth off
+tls off
+logfile
+syslog off
+
+account default
+host {{getv "/php/smtp"}}
+from {{getv "/php/smtp/from"}}

@@ -22,7 +22,7 @@ RUN \
         php7.0-gd \
         php7.0-mcrypt \
         php7.0-curl \
-		php7.0-mbstring \
+        php7.0-mbstring \
         php7.0-memcache \
         php7.0-xsl \
         php7.0-xdebug \

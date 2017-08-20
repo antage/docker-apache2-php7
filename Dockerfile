@@ -55,8 +55,6 @@ RUN \
     && rm -rf /tmp/ioncube \
     && rm /tmp/ioncube.tar.gz \
     && echo "; configuration for php ionCube loader module\n; priority=00\nzend_extension=ioncube_loader.so" > /etc/php/7.0/mods-available/ioncube_loader.ini \
-    && /usr/bin/pear channel-discover pear.geometria-lab.net \
-    && /usr/bin/pear install geometria-lab/Rediska-beta \
     && curl -#L https://github.com/kelseyhightower/confd/releases/download/v0.11.0/confd-0.11.0-linux-amd64 -o /usr/local/bin/confd \
     && chmod 755 /usr/local/bin/confd \
     && mkdir -p /etc/confd/conf.d \
@@ -74,6 +72,12 @@ RUN \
     && a2enmod mpm_prefork rewrite php7.0 env dir auth_basic authn_file authz_user authz_host access_compat \
     && rm /etc/apache2/sites-enabled/000-default.conf \
     && rm /var/run/newrelic-daemon.pid
+
+COPY Rediska-0.4.0.tgz /tmp/Rediska-0.4.0.tar.gz
+RUN phpenmod -s cli xml \
+    && pear install /tmp/Rediska-0.4.0.tar.gz \
+    && rm /tmp/Rediska-0.4.0.tar.gz \
+    && phpdismod -s cli xml
 
 EXPOSE 8080
 

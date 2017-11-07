@@ -31,6 +31,7 @@ RUN \
         php7.0-apcu \
         php7.0-mongo \
         php7.0-amqp \
+        php7.0-mongodb \
         php7.0 \
         php7.0-dev \
         php-pear \

@@ -41,3 +41,10 @@ Just run `make`.
 * `PHP_MBSTRING_FUNC_OVERLOAD` - `mbstring.func_overload` (0 by default).
 * `PHP_NEWRELIC_LICENSE_KEY` - Newrelic agent license key (empty and disabled by default).
 * `PHP_NEWRELIC_APPNAME` - Newrelic application name (empty by default).
+
+## Required variables
+
+Following variables must be defined to run the container:
+
+* `PHP_SMTP`
+* `PHP_SMTP_FROM`

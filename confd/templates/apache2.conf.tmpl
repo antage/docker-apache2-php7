@@ -52,7 +52,10 @@ LogFormat "%a %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
 
+{{if getv "/apache/disable/access/log"}}
+{{else}}
 CustomLog /var/log/apache2/access.log combined
+{{end}}
 
 GracefulShutdownTimeout 30
 

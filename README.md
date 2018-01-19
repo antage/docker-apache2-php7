@@ -34,6 +34,7 @@ Just run `make`.
 * `APACHE_ALLOW_ENCODED_SLASHES` ('Off' by default)
 * `APACHE_MAX_REQUEST_WORKERS` (32 by default)
 * `APACHE_MAX_CONNECTIONS_PER_CHILD` (1024 by default)
+* `APACHE_DISABLE_ACCESS_LOG` (empty by default)
 * `PHP_MODS`
 * `PHP_TIMEZONE` ('UTC' by default)
 * `PHP_SMTP` - MTA SMTP IP-address/hostname

@@ -61,7 +61,10 @@ RUN \
     && chmod 755 /usr/local/bin/confd \
     && mkdir -p /etc/confd/conf.d \
     && mkdir -p /etc/confd/templates \
-    && touch /etc/confd/confd.toml
+    && touch /etc/confd/confd.toml \
+    && curl -o /usr/local/bin/composer https://getcomposer.org/download/1.6.3/composer.phar \
+    && chown root:root /usr/local/bin/composer \
+    && chmod 0755 /usr/local/bin/composer
 
 RUN \
     rm /etc/php/7.0/apache2/conf.d/* \

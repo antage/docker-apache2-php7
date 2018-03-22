@@ -28,6 +28,7 @@ RUN \
         php7.0-xdebug \
         php7.0-intl \
         php7.0-xmlrpc \
+        php7.0-zip \
         php7.0-apcu \
         php7.0-mongo \
         php7.0-pgsql \

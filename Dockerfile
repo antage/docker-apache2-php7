@@ -1,12 +1,12 @@
-FROM debian:stretch
+FROM debian:buster
 
 RUN \
     apt-get -y -q update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --no-install-recommends install apt-transport-https curl ca-certificates gnupg \
-    && echo "deb http://www.deb-multimedia.org stretch main non-free" > /etc/apt/sources.list.d/deb-multimedia.list \
+    && echo "deb http://www.deb-multimedia.org buster main non-free" > /etc/apt/sources.list.d/deb-multimedia.list \
     && echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list \
     && curl -s https://download.newrelic.com/548C16BF.gpg | apt-key add - \
-    && apt-get -y -q update \
+    && apt-get -y -q -oAcquire::AllowInsecureRepositories=true update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --allow-unauthenticated --no-install-recommends install deb-multimedia-keyring \
     && apt-get -y -q update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --no-install-recommends install \
@@ -18,25 +18,24 @@ RUN \
         apache2-dbg \
         libapr1-dbg \
         libaprutil1-dbg \
-        php7.0-cli \
-        php7.0-mysql \
-        php7.0-gd \
-        php7.0-mcrypt \
-        php7.0-curl \
-        php7.0-mbstring \
-        php7.0-memcache \
-        php7.0-xsl \
-        php7.0-xdebug \
-        php7.0-intl \
-        php7.0-xmlrpc \
-        php7.0-zip \
-        php7.0-apcu \
-        php7.0-mongo \
-        php7.0-pgsql \
-        php7.0-amqp \
-        php7.0-mongodb \
-        php7.0 \
-        php7.0-dev \
+        php7.2-cli \
+        php7.2-mysql \
+        php7.2-gd \
+        php7.2-curl \
+        php7.2-mbstring \
+        php7.2-memcache \
+        php7.2-xsl \
+        php7.2-xdebug \
+        php7.2-intl \
+        php7.2-xmlrpc \
+        php7.2-zip \
+        php7.2-apcu \
+        php7.2-mongo \
+        php7.2-pgsql \
+        php7.2-amqp \
+        php7.2-mongodb \
+        php7.2 \
+        php7.2-dev \
         php-pear \
         gdb \
         ffmpeg \
@@ -58,23 +57,23 @@ RUN \
         $(php -r 'printf("%s", PHP_EXTENSION_DIR);')/ioncube_loader.so \
     && rm -rf /tmp/ioncube \
     && rm /tmp/ioncube.tar.gz \
-    && echo "; configuration for php ionCube loader module\n; priority=00\nzend_extension=ioncube_loader.so" > /etc/php/7.0/mods-available/ioncube_loader.ini \
+    && echo "; configuration for php ionCube loader module\n; priority=00\nzend_extension=ioncube_loader.so" > /etc/php/7.2/mods-available/ioncube_loader.ini \
     && curl -#L https://github.com/kelseyhightower/confd/releases/download/v0.11.0/confd-0.11.0-linux-amd64 -o /usr/local/bin/confd \
     && chmod 755 /usr/local/bin/confd \
     && mkdir -p /etc/confd/conf.d \
     && mkdir -p /etc/confd/templates \
     && touch /etc/confd/confd.toml \
-    && curl -o /usr/local/bin/composer https://getcomposer.org/download/1.6.3/composer.phar \
+    && curl -o /usr/local/bin/composer https://getcomposer.org/download/1.6.4/composer.phar \
     && chown root:root /usr/local/bin/composer \
     && chmod 0755 /usr/local/bin/composer
 
 RUN \
-    rm /etc/php/7.0/apache2/conf.d/* \
-    && rm /etc/php/7.0/cli/conf.d/* \
+    rm /etc/php/7.2/apache2/conf.d/* \
+    && rm /etc/php/7.2/cli/conf.d/* \
     && phpenmod -s ALL opcache \
     && rm /etc/apache2/conf-enabled/* \
     && rm /etc/apache2/mods-enabled/* \
-    && a2enmod mpm_prefork rewrite php7.0 env dir auth_basic authn_file authz_user authz_host access_compat \
+    && a2enmod mpm_prefork rewrite php7.2 env dir auth_basic authn_file authz_user authz_host access_compat \
     && rm /etc/apache2/sites-enabled/000-default.conf \
     && rm /var/run/newrelic-daemon.pid
 
@@ -112,7 +111,7 @@ COPY apache2-conf/charset.conf /etc/apache2/conf-available/charset.conf
 COPY apache2-conf/security.conf /etc/apache2/conf-available/security.conf
 COPY .gdbinit /root/.gdbinit
 
-COPY opcache_bitrix.blacklist /etc/php/7.0/opcache_bitrix.blacklist
+COPY opcache_bitrix.blacklist /etc/php/7.2/opcache_bitrix.blacklist
 
 COPY confd/php.cli.toml /etc/confd/conf.d/
 COPY confd/templates/php.cli.ini.tmpl /etc/confd/templates/
@@ -130,7 +129,7 @@ COPY confd/templates/msmtprc.tmpl /etc/confd/templates/
 
 COPY ports.conf /etc/apache2/ports.conf
 
-COPY apache2-mods/php7.0.conf /etc/apache2/mods-available/php7.0.conf
+COPY apache2-mods/php7.2.conf /etc/apache2/mods-available/php7.2.conf
 COPY apache2-mods/mime.conf /etc/apache2/mods-available/mime.conf
 COPY apache2-mods/alias.conf /etc/apache2/mods-available/alias.conf
 COPY apache2-mods/autoindex.conf /etc/apache2/mods-available/autoindex.conf

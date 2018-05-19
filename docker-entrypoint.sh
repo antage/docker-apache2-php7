@@ -50,7 +50,7 @@ if [ "$1" = 'apache2' ]; then
     done
 
     echo "Starting Apache 2.x in foreground."
-    exec /usr/sbin/apache2 -D FOREGROUND
+    exec /usr/bin/setpriv --inh-caps -sys_ptrace --bounding-set -sys_ptrace /usr/sbin/apache2 -D FOREGROUND
 fi
 
 exec "$@"

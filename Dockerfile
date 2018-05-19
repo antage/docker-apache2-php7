@@ -10,6 +10,7 @@ RUN \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --allow-unauthenticated --no-install-recommends install deb-multimedia-keyring \
     && apt-get -y -q update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --no-install-recommends install \
+        setpriv \
         curl \
         imagemagick \
         msmtp-mta \
@@ -40,7 +41,6 @@ RUN \
         gdb \
         ffmpeg \
         imagemagick \
-#        flvtool2 \
         ghostscript \
         wget \
         pngquant \

@@ -18,24 +18,24 @@ RUN \
         apache2-dbg \
         libapr1-dbg \
         libaprutil1-dbg \
-        php7.2-cli \
-        php7.2-mysql \
-        php7.2-gd \
-        php7.2-curl \
-        php7.2-mbstring \
-        php7.2-memcache \
-        php7.2-xsl \
-        php7.2-xdebug \
-        php7.2-intl \
-        php7.2-xmlrpc \
-        php7.2-zip \
-        php7.2-apcu \
-        php7.2-mongo \
-        php7.2-pgsql \
-        php7.2-amqp \
-        php7.2-mongodb \
-        php7.2 \
-        php7.2-dev \
+        php7.1-cli \
+        php7.1-mysql \
+        php7.1-gd \
+        php7.1-curl \
+        php7.1-mbstring \
+        php7.1-memcache \
+        php7.1-xsl \
+        php7.1-xdebug \
+        php7.1-intl \
+        php7.1-xmlrpc \
+        php7.1-zip \
+        php7.1-apcu \
+        php7.1-mongo \
+        php7.1-pgsql \
+        php7.1-amqp \
+        php7.1-mongodb \
+        php7.1 \
+        php7.1-dev \
         php-pear \
         gdb \
         ffmpeg \
@@ -57,7 +57,7 @@ RUN \
         $(php -r 'printf("%s", PHP_EXTENSION_DIR);')/ioncube_loader.so \
     && rm -rf /tmp/ioncube \
     && rm /tmp/ioncube.tar.gz \
-    && echo "; configuration for php ionCube loader module\n; priority=00\nzend_extension=ioncube_loader.so" > /etc/php/7.2/mods-available/ioncube_loader.ini \
+    && echo "; configuration for php ionCube loader module\n; priority=00\nzend_extension=ioncube_loader.so" > /etc/php/7.1/mods-available/ioncube_loader.ini \
     && curl -#L https://github.com/kelseyhightower/confd/releases/download/v0.11.0/confd-0.11.0-linux-amd64 -o /usr/local/bin/confd \
     && chmod 755 /usr/local/bin/confd \
     && mkdir -p /etc/confd/conf.d \
@@ -68,12 +68,12 @@ RUN \
     && chmod 0755 /usr/local/bin/composer
 
 RUN \
-    rm /etc/php/7.2/apache2/conf.d/* \
-    && rm /etc/php/7.2/cli/conf.d/* \
+    rm /etc/php/7.1/apache2/conf.d/* \
+    && rm /etc/php/7.1/cli/conf.d/* \
     && phpenmod -s ALL opcache \
     && rm /etc/apache2/conf-enabled/* \
     && rm /etc/apache2/mods-enabled/* \
-    && a2enmod mpm_prefork rewrite php7.2 env dir auth_basic authn_file authz_user authz_host access_compat \
+    && a2enmod mpm_prefork rewrite php7.1 env dir auth_basic authn_file authz_user authz_host access_compat \
     && rm /etc/apache2/sites-enabled/000-default.conf \
     && rm /var/run/newrelic-daemon.pid
 
@@ -111,7 +111,7 @@ COPY apache2-conf/charset.conf /etc/apache2/conf-available/charset.conf
 COPY apache2-conf/security.conf /etc/apache2/conf-available/security.conf
 COPY .gdbinit /root/.gdbinit
 
-COPY opcache_bitrix.blacklist /etc/php/7.2/opcache_bitrix.blacklist
+COPY opcache_bitrix.blacklist /etc/php/7.1/opcache_bitrix.blacklist
 
 COPY confd/php.cli.toml /etc/confd/conf.d/
 COPY confd/templates/php.cli.ini.tmpl /etc/confd/templates/
@@ -129,7 +129,7 @@ COPY confd/templates/msmtprc.tmpl /etc/confd/templates/
 
 COPY ports.conf /etc/apache2/ports.conf
 
-COPY apache2-mods/php7.2.conf /etc/apache2/mods-available/php7.2.conf
+COPY apache2-mods/php7.1.conf /etc/apache2/mods-available/php7.1.conf
 COPY apache2-mods/mime.conf /etc/apache2/mods-available/mime.conf
 COPY apache2-mods/alias.conf /etc/apache2/mods-available/alias.conf
 COPY apache2-mods/autoindex.conf /etc/apache2/mods-available/autoindex.conf

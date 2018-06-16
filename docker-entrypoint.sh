@@ -31,7 +31,7 @@ for mod in $(echo $PHP_MODS | tr ',' ' '); do
 done
 
 if [ -n "$PHP_NEWRELIC_LICENSE_KEY" -a -n "$PHP_NEWRELIC_APPNAME" ]; then
-    phpenmod -s apache2 newrelic
+    phpenmod -v 7.1 -s apache2 newrelic
 fi
 
 export APACHE_SERVER_NAME="${APACHE_SERVER_NAME:-$(hostname)}"

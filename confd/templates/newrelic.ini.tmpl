@@ -508,7 +508,7 @@ newrelic.browser_monitoring.auto_instrument = false
 ; Default: empty (auto-detect framework)
 ; Info   : Forces the framework to be one of the supported frameworks. Since
 ;          this should only be used if the auto-detection fails, please let
-;          us know at support.newrelic.com if you encounter a failure. 
+;          us know at support.newrelic.com if you encounter a failure.
 ;          Must be one of the following values:
 ;          cakephp, codeigniter, drupal, drupal8, joomla, kohana, laravel,
 ;          magento, magento2, mediawiki, silex, slim, symfony1, symfony2,
@@ -516,7 +516,8 @@ newrelic.browser_monitoring.auto_instrument = false
 ;
 ;          Note that "drupal" covers only Drupal 6 and 7.
 ;
-newrelic.framework = "no_framework"
+newrelic.framework = "{{getv "/php/newrelic/framework"}}"
+
 
 ; Setting: newrelic.webtransaction.name.remove_trailing_path
 ; Type   : boolean
@@ -772,7 +773,7 @@ newrelic.framework = "no_framework"
 ;          Depending on your events retention policy, enabling this setting may
 ;          impact your billing statement.
 ;
-;          Please note that exception messages are collected and sent with 
+;          Please note that exception messages are collected and sent with
 ;          events. Additionally, if you use PHPUnit's --disallow-test-output
 ;          flag, any offending output from a risky test will also be included.
 ;

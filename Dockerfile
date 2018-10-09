@@ -1,15 +1,16 @@
 FROM debian:buster
 
 RUN \
-    apt-get -y -q update \
+    DEBIAN_FRONTEND=noninteractive apt-get -y -q update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --no-install-recommends install apt-transport-https curl ca-certificates gnupg \
     && echo "deb http://www.deb-multimedia.org buster main non-free" > /etc/apt/sources.list.d/deb-multimedia.list \
     && echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list \
     && curl -s https://download.newrelic.com/548C16BF.gpg | apt-key add - \
-    && apt-get -y -q -oAcquire::AllowInsecureRepositories=true update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y -q -oAcquire::AllowInsecureRepositories=true update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --allow-unauthenticated --no-install-recommends install deb-multimedia-keyring \
-    && apt-get -y -q update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y -q update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -q --no-install-recommends install \
+        locales \
         setpriv \
         curl \
         imagemagick \
@@ -45,9 +46,12 @@ RUN \
         pngquant \
         gosu \
         newrelic-php5 \
-    && apt-get clean \
+    && DEBIAN_FRONTEND=noninteractive apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm /var/log/dpkg.log \
+    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+    && echo "ru_RU.UTF-8 UTF-8" >> /etc/locale.gen \
+    && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
     && rm /var/www/html/index.html \
     && rmdir /var/www/html \
     && curl -#L http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz -o /tmp/ioncube.tar.gz \

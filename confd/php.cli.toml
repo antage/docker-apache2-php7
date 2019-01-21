@@ -1,6 +1,6 @@
 [template]
 src = "php.cli.ini.tmpl"
-dest = "/etc/php/7.0/cli/php.ini"
+dest = "/etc/php/7.3/cli/php.ini"
 mode = "0644"
 
 keys = [

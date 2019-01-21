@@ -1,8 +1,8 @@
 # apache2-php7
 
-Apache 2.x + mod\_php 7.x
+Apache 2.x + mod\_php 7.3
 
-Based on debian:stable.
+Based on debian:buster.
 
 ## Building
 

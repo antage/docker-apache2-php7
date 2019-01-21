@@ -1,6 +1,6 @@
 [template]
 src = "newrelic.ini.tmpl"
-dest = "/etc/php/7.0/mods-available/newrelic.ini"
+dest = "/etc/php/7.3/mods-available/newrelic.ini"
 mode = "0644"
 
 keys = [

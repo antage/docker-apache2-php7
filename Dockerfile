@@ -50,6 +50,9 @@ RUN \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm /var/log/dpkg.log \
+    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+    && echo "ru_RU.UTF-8 UTF-8" >> /etc/locale.gen \
+    && dpkg-reconfigure locales \
     && rm /var/www/html/index.html \
     && rmdir /var/www/html \
     && curl -#L http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz -o /tmp/ioncube.tar.gz \

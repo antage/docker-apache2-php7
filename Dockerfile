@@ -11,8 +11,9 @@ RUN \
     && apt-get -y -q --allow-unauthenticated --no-install-recommends install deb-multimedia-keyring \
     && apt-get -y -q update \
     && apt-get -y -q --no-install-recommends install \
-        setpriv \
+        util-linux \
         curl \
+        locales \
         imagemagick \
         msmtp-mta \
         apache2 \
@@ -22,7 +23,6 @@ RUN \
         php7.3-cli \
         php7.3-mysql \
         php7.3-gd \
-        php7.3-mcrypt \
         php7.3-curl \
         php7.3-mbstring \
         php7.3-memcache \

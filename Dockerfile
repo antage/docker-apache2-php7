@@ -38,6 +38,7 @@ RUN \
         php7.3-mongodb \
         php7.3 \
         php7.3-dev \
+        php-imagick \
         php-pear \
         gdb \
         ffmpeg \

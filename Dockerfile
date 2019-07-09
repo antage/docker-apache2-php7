@@ -15,9 +15,9 @@ RUN \
         curl \
         locales \
         imagemagick \
+        libmagickcore-6.q16-6-extra \
         msmtp-mta \
         apache2 \
-        apache2-dbg \
         libapr1-dbg \
         libaprutil1-dbg \
         php7.3-cli \

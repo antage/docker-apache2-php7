@@ -48,6 +48,7 @@ RUN \
         pngquant \
         gosu \
         newrelic-php5 \
+        unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm /var/log/dpkg.log \
@@ -69,7 +70,7 @@ RUN \
     && mkdir -p /etc/confd/conf.d \
     && mkdir -p /etc/confd/templates \
     && touch /etc/confd/confd.toml \
-    && curl -o /usr/local/bin/composer https://getcomposer.org/download/1.8.0/composer.phar \
+    && curl -o /usr/local/bin/composer https://getcomposer.org/download/1.8.6/composer.phar \
     && chown root:root /usr/local/bin/composer \
     && chmod 0755 /usr/local/bin/composer
 

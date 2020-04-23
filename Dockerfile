@@ -42,10 +42,11 @@ RUN \
         php-pear \
         gdb \
         ffmpeg \
-        imagemagick \
         ghostscript \
         wget \
         pngquant \
+        jpegoptim \
+        optipng \
         gosu \
         newrelic-php5 \
         unzip \

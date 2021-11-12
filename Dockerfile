@@ -69,6 +69,10 @@ RUN \
     && chmod 0755 /usr/local/bin/composer
 
 RUN \
+    sed -i -E 's/^mozilla\/DST_Root_CA_X3\.crt$/!\0/' /etc/ca-certificates.conf \
+    && update-ca-certificates
+
+RUN \
     rm /etc/php/7.0/apache2/conf.d/* \
     && rm /etc/php/7.0/cli/conf.d/* \
     && phpenmod -s ALL opcache \

@@ -6,9 +6,9 @@
 # MaxConnectionsPerChild: maximum number of requests a server process serves
 
 <IfModule mpm_prefork_module>
-    StartServers            2
-    MinSpareServers         2
-    MaxSpareServers         8
+    StartServers            {{getv "/apache/start/servers"}}
+    MinSpareServers         {{getv "/apache/min/spare/servers"}}
+    MaxSpareServers         {{getv "/apache/max/spare/servers"}}
     MaxRequestWorkers       {{getv "/apache/max/request/workers"}}
     MaxConnectionsPerChild  {{getv "/apache/max/connections/per/child"}}
 </IfModule>

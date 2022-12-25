@@ -4,6 +4,9 @@ dest = "/etc/apache2/mods-available/mpm_prefork.conf"
 mode = "0644"
 
 keys = [
+    "/apache/start/servers",
+    "/apache/min/spare/servers",
+    "/apache/max/spare/servers",
     "/apache/max/request/workers",
-    "/apache/max/connections/per/child",
+    "/apache/max/connections/per/child"
 ]

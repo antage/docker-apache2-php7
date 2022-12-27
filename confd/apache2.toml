@@ -4,5 +4,8 @@ dest = "/etc/apache2/apache2.conf"
 mode = "0644"
 
 keys = [
-    "/apache/disable/access/log"
+    "/apache/disable/access/log",
+	"/apache/loglevel",
+	"/apache/errorlog",
+	"/apache/customlog"
 ]

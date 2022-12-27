@@ -9,8 +9,6 @@ KeepAliveTimeout 5
 User ${APACHE_RUN_USER}
 Group ${APACHE_RUN_GROUP}
 HostnameLookups Off
-ErrorLog ${APACHE_LOG_DIR}/error.log
-LogLevel error
 
 # Include module configuration:
 IncludeOptional mods-enabled/*.load
@@ -52,10 +50,23 @@ LogFormat "%a %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
 
-{{if getv "/apache/disable/access/log"}}
-{{else}}
-CustomLog /var/log/apache2/access.log combined
-{{end}}
+{{ if not (exists "/apache/disable/access/log") }}
+{{ if exists "/apache/customlog" }}
+CustomLog {{ getv "/apache/customlog" }}
+{{ else }}
+CustomLog ${APACHE_LOG_DIR}/access.log combined
+{{ end }}
+{{ end }}
+{{ if exists "/apache/errorlog" }}
+ErrorLog {{ getv "/apache/errorlog" }}
+{{ else }}
+ErrorLog ${APACHE_LOG_DIR}/error.log
+{{ end }}
+{{ if exists "/apache/loglevel" }}
+LogLevel {{ getv "/apache/loglevel" }}
+{{ else }}
+LogLevel error
+{{ end }}
 
 GracefulShutdownTimeout 30
 

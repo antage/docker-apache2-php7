@@ -1,4 +1,4 @@
 .PHONY: all
 
 all:
-	docker build -t apache2-php7:7.3 .
+	docker build -t antage/apache2-php7:7.3 .

@@ -1,16 +1,71 @@
+# PHP 7.3.31 (Debian buster 7.3.31-1~deb10u7) built from the official source
+# package with the CVE-2026-109618/109619 fix applied on top (see security/).
+#
+#   builder  - compiles the php7.3 source debs (dpkg-buildpackage)
+#   (final)  - full runtime stack: apache2 + built php7.3 + extensions
+#
+# Buster is EOL, both stages use archive.debian.org.
+
+FROM debian:buster AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN \
+    printf 'deb [check-valid-until=no] http://archive.debian.org/debian buster main\ndeb-src [check-valid-until=no] http://archive.debian.org/debian buster main\ndeb [check-valid-until=no] http://archive.debian.org/debian-security buster/updates main\ndeb-src [check-valid-until=no] http://archive.debian.org/debian-security buster/updates main\n' > /etc/apt/sources.list \
+    && apt-get -y -q update \
+    && apt-get -y -q --no-install-recommends install \
+        ca-certificates \
+        dpkg-dev \
+        fakeroot \
+        quilt \
+        wget \
+    && apt-get -y -q build-dep php7.3 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Official buster-security source package (7.3.31-1~deb10u7), sha256-verified.
+RUN \
+    mkdir -p /build/php7.3/src \
+    && cd /build/php7.3/src \
+    && wget \
+        http://archive.debian.org/debian-security/pool/updates/main/p/php7.3/php7.3_7.3.31.orig.tar.xz \
+        http://archive.debian.org/debian-security/pool/updates/main/p/php7.3/php7.3_7.3.31-1~deb10u7.debian.tar.xz \
+        http://archive.debian.org/debian-security/pool/updates/main/p/php7.3/php7.3_7.3.31-1~deb10u7.dsc \
+    && ls -la \
+    && echo "d1aa8f44595d01ac061ff340354d95e146d6152f70e799b44d6b8654fb45cbcc  php7.3_7.3.31.orig.tar.xz" | sha256sum -c - \
+    && echo "54a61d282eee61599400be8cf7eb8eff3474ad8be20e84ba22aa9d80fef3907a  php7.3_7.3.31-1~deb10u7.debian.tar.xz" | sha256sum -c - \
+    # manual unpack: the dsc carries an inline PGP signature and the fresh
+    # container has no uploader key, so dpkg-source -x would refuse
+    && tar xJf php7.3_7.3.31.orig.tar.xz \
+    && mv php-7.3.31 php7.3-7.3.31 \
+    && tar xJf php7.3_7.3.31-1~deb10u7.debian.tar.xz -C php7.3-7.3.31 \
+    && test -f php7.3-7.3.31/debian/patches/series
+
+# CVE-2026-109618/109619: applied as the last entry of debian/patches/series,
+# so dpkg-buildpackage (3.0 quilt) picks it up automatically.
+COPY security/CVE-2026-109618-109619-php73.patch /build/php7.3/CVE-2026-109618-109619-php73.patch
+RUN \
+    cd /build/php7.3/src/php7.3-7.3.31 \
+    && cp /build/php7.3/CVE-2026-109618-109619-php73.patch debian/patches/ \
+    && echo "CVE-2026-109618-109619-php73.patch" >> debian/patches/series \
+    && dpkg-buildpackage -us -uc -b -d -j"$(nproc)" \
+    && mv ../*.deb /build/php7.3/
+
+# ---------------------------------------------------------------------------
+
 FROM debian:buster
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN \
-    apt-get -y -q update \
+    printf 'deb [check-valid-until=no] http://archive.debian.org/debian buster main\ndeb [check-valid-until=no] http://archive.debian.org/debian-security buster/updates main\n' > /etc/apt/sources.list \
+    && apt-get -y -q update \
     && apt-get -y -q --no-install-recommends install apt-transport-https curl ca-certificates gnupg \
-    && echo "deb http://www.deb-multimedia.org buster main non-free" > /etc/apt/sources.list.d/deb-multimedia.list \
     && echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list \
     && curl -s https://download.newrelic.com/548C16BF.gpg | apt-key add - \
-    && apt-get -y -q -oAcquire::AllowInsecureRepositories=true update \
-    && apt-get -y -q --allow-unauthenticated --no-install-recommends install deb-multimedia-keyring \
-    && apt-get -y -q update \
-    && apt-get -y -q --no-install-recommends install \
+    && apt-get -y -q update
+
+# Base runtime stack (no php7.3-* here: they come from the builder stage).
+RUN \
+    apt-get -y -q --no-install-recommends install \
         util-linux \
         curl \
         locales \
@@ -20,27 +75,6 @@ RUN \
         apache2 \
         libapr1-dbg \
         libaprutil1-dbg \
-        php7.3-cli \
-        php7.3-mysql \
-        php7.3-gd \
-        php7.3-curl \
-        php7.3-mbstring \
-        php7.3-memcache \
-        php7.3-xsl \
-        php7.3-xdebug \
-        php7.3-intl \
-        php7.3-xmlrpc \
-        php7.3-zip \
-        php7.3-apcu \
-        php7.3-mongo \
-        php7.3-pgsql \
-        php7.3-amqp \
-        php7.3 \
-        php7.3-dev \
-        php-igbinary \
-        php-redis \
-        php-imagick \
-        php-pear \
         gdb \
         ffmpeg \
         ghostscript \
@@ -49,7 +83,6 @@ RUN \
         jpegoptim \
         optipng \
         gosu \
-        newrelic-php5 \
         unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -58,8 +91,35 @@ RUN \
     && echo "ru_RU.UTF-8 UTF-8" >> /etc/locale.gen \
     && dpkg-reconfigure locales \
     && rm /var/www/html/index.html \
-    && rmdir /var/www/html \
-    && curl -#L http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz -o /tmp/ioncube.tar.gz \
+    && rmdir /var/www/html
+
+# PHP 7.3.31 built from source (builder stage), all packages of the source
+# build: common/cli/opcache/xml/curl/gd/intl/xsl/zip/mysql/pgsql/xmlrpc/dev/
+# libapache2-mod-php7.3/embed/etc. apt resolves the inter-deb order itself
+# (dpkg -i would not: the php7.3 metapackage sorts before its deps).
+COPY --from=builder /build/php7.3/*.deb /tmp/debs/
+RUN \
+    apt-get update \
+    && apt-get -y -q --no-install-recommends install /tmp/debs/*.deb \
+    && apt-get -y -q --no-install-recommends install \
+        php7.3-xdebug \
+        php-igbinary \
+        php-redis \
+        php-imagick \
+        php-pear \
+        php7.3-memcache \
+        php7.3-mongo \
+        php7.3-amqp \
+        php7.3-apcu \
+        newrelic-php5 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm /tmp/debs/*.deb \
+    && rm /var/log/dpkg.log
+
+# ionCube loader (7.3), confd, composer
+RUN \
+    curl -#L http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz -o /tmp/ioncube.tar.gz \
     && tar xzf /tmp/ioncube.tar.gz -C /tmp/ \
     && install -m 0644 \
         /tmp/ioncube/ioncube_loader_lin_$(php -r 'printf("%s.%s", PHP_MAJOR_VERSION, PHP_MINOR_VERSION);').so \

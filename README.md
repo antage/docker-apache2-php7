@@ -8,6 +8,14 @@ Based on debian:buster.
 
 Just run `make`.
 
+## Security
+
+The PHP is built from the official buster source package with the CVE patches
+listed in `security/series` applied on top, and the image ships a hardened
+ImageMagick policy. `security/README.md` lists what each patch fixes and the
+behaviour changes; `security/verify-patches.sh` checks that every patch still
+applies to the source tree with no fuzz.
+
 ## Volumes
 
 * `/var/lib/php/sessions` (tmpfs is recommended)

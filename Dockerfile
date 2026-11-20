@@ -1,5 +1,5 @@
 # PHP 7.3.31 (Debian buster 7.3.31-1~deb10u7) built from the official source
-# package with the CVE-2026-109618/109619 fix applied on top (see security/).
+# package with the security patches listed in security/series applied on top.
 #
 #   builder  - compiles the php7.3 source debs (dpkg-buildpackage)
 #   (final)  - full runtime stack: apache2 + built php7.3 + extensions
@@ -40,13 +40,16 @@ RUN \
     && tar xJf php7.3_7.3.31-1~deb10u7.debian.tar.xz -C php7.3-7.3.31 \
     && test -f php7.3-7.3.31/debian/patches/series
 
-# CVE-2026-109618/109619: applied as the last entry of debian/patches/series,
-# so dpkg-buildpackage (3.0 quilt) picks it up automatically.
-COPY security/CVE-2026-109618-109619-php73.patch /build/php7.3/CVE-2026-109618-109619-php73.patch
+# security/series is appended to debian/patches/series in order, so
+# dpkg-buildpackage (3.0 quilt) applies it after the Debian patches.
+COPY security/ /build/php7.3/security/
 RUN \
     cd /build/php7.3/src/php7.3-7.3.31 \
-    && cp /build/php7.3/CVE-2026-109618-109619-php73.patch debian/patches/ \
-    && echo "CVE-2026-109618-109619-php73.patch" >> debian/patches/series \
+    && while read -r patch_name; do \
+        case "$patch_name" in ''|'#'*) continue ;; esac; \
+        cp "/build/php7.3/security/$patch_name" debian/patches/ \
+        && echo "$patch_name" >> debian/patches/series; \
+    done < /build/php7.3/security/series \
     && dpkg-buildpackage -us -uc -b -d -j"$(nproc)" \
     && mv ../*.deb /build/php7.3/
 
@@ -92,6 +95,10 @@ RUN \
     && dpkg-reconfigure locales \
     && rm /var/www/html/index.html \
     && rmdir /var/www/html
+
+# ImageTragick hardening: the buster policy is replaced by ours (see
+# security/imagemagick-policy.xml and security/README.md).
+COPY security/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
 
 # PHP 7.3.31 built from source (builder stage), all packages of the source
 # build: common/cli/opcache/xml/curl/gd/intl/xsl/zip/mysql/pgsql/xmlrpc/dev/
